@@ -1,3 +1,4 @@
+#https://gist.github.com/nboubakr/0eec4ea650eeb6dc21f9
 ###import all modules needed###
 import heapq
 from collections import defaultdict
@@ -26,9 +27,7 @@ def encode(frequency):
         for pair in hi[1:]:
             pair[1] = '1' + pair[1]
         heapq.heappush(heap, [lo[0] + hi[0]] + lo[1:] + hi[1:])
-    a=sorted(heapq.heappop(heap)[1:], key=getKey_1)
-    
-    return sorted(a,key=getKey_2)
+    return sorted(heapq.heappop(heap)[1:], key=lambda p: (len(p[-1]), p))
 
 ###main function###
 def __main__():
@@ -261,4 +260,3 @@ def __main__():
 
 ###call main function
 __main__()
-#########
