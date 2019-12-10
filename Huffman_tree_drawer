@@ -1,217 +1,4 @@
 #https://gist.github.com/nboubakr/0eec4ea650eeb6dc21f9
-###import all modules needed###
-import heapq
-from collections import defaultdict
-import turtle as t
-
-###Keys to sort items in lists###
-def getKey_1(item):
-    return item[1]
-def getKey_2(item):
-    return len(item[1])
-def getKey_3(item):
-    return len(item[0])
-def getKey_4(item):
-    return item[0]
-
-###Find Huffman code of each characters###
-def encode(frequency):
-    heap = [[weight, [symbol,'']] for symbol, weight in frequency.items()]
-
-    heapq.heapify(heap)
-    while len(heap) > 1:
-        lo = heapq.heappop(heap)
-        hi = heapq.heappop(heap)
-        for pair in lo[1:]:
-            pair[1] = '0' + pair[1]
-        for pair in hi[1:]:
-            pair[1] = '1' + pair[1]
-        heapq.heappush(heap, [lo[0] + hi[0]] + lo[1:] + hi[1:])
-    return sorted(heapq.heappop(heap)[1:], key=lambda p: (len(p[-1]), p))
-
-###main function###
-def __main__():
-    data = input("Enter a sentence: \n")
-    
-    try:
-        frequency = defaultdict(int)
-        for symbol in data:
-            frequency[symbol] += 1
-
-        huff = encode(frequency)
-        if len(huff)==1:
-            a/0
-        print("\nSentence:",data,"\n")
-        print ("Symbol".ljust(10) + "Weight".ljust(10) + "Huffman Code")
-        for p in huff:
-            p_=str(frequency[p[0]]).ljust(10) + p[1]
-            if p[0]==" ":
-                print("[space]".ljust(10)+str(frequency[p[0]]).ljust(10) + p[1])
-            else:
-                print(p[0].ljust(10) + str(frequency[p[0]]).ljust(10) + p[1])
-
-        t.hideturtle()
-        #set origin point
-        origin=0,270
-        #set other turtle stuff
-        t.speed(0)
-        t.pu()
-        t.goto(origin)
-        t.pd()
-        t.color("white")
-        t.bgcolor("black")
-        #determine how much space of the parent nodes
-        def space():
-            t.pu()
-            t.fd(20)
-            t.pd()
-        #the branch that goes down left
-        def down_lt_branch(a):
-
-            if a==0:
-                b=200
-            elif a==1:
-                b=100
-            elif a==2:
-                b=50
-            elif a==3:
-                b=30
-            elif a==4:
-                b=15
-            else:
-                b=40//a
-            t.fd(10)
-            t.rt(90)
-            t.fd(b)
-            t.lt(90)
-            t.fd(10)
-            space()
-        #the branch that goes down right
-        def down_rt_branch(a):
-            if a==0:
-                b=200
-            elif a==1:
-                b=100
-            elif a==2:
-                b=50
-            elif a==3:
-                b=30
-            elif a==4:
-                b=15
-            else:
-                b=40//a
-        
-            t.fd(10)
-            t.lt(90)
-            t.fd(b)
-            t.rt(90)
-            t.fd(10)
-            space()
-        #write the roots with no circle
-
-        def write_1(c,b):
-            t.pu()
-            t.lt(90)
-            t.bk(b*2)
-            t.pd()
-            if c!='[space]':
-                t.write(c,font=("Helvetica",10,"normal"))
-            else:
-                t.write(c,font=("Helvetica",8,"normal"))
-            t.pu()
-            t.fd(b*2)
-            t.rt(90)
-            t.pd()
-
-        #write the parent roots with a circle
-        def write_2(c,b):
-            t.pu()
-            t.lt(90)
-            t.bk(b*2)
-            t.pd()
-            t.write(c,font=("Helvetica",12,"normal"))
-            t.pu()
-            t.fd(b*2)
-            t.rt(90)
-            t.pd()
-            t.lt(90)
-            t.circle(10)
-            t.rt(90)
-
-        #starting with the main branch
-        t.pu()
-        t.bk(4)
-        t.pd()
-        t.write(len(data),font=("Helvetica",12,"normal"))
-        t.pu()
-        t.fd(4)
-        t.pd()
-        t.circle(10)
-        t.rt(90)
-        t.pd()
-        #list for the binary code for the roots
-        q1=[]
-
-        #append all the binary code of the roots
-
-        x1=0
-        x=0
-        m=0
-
-        while m==0:
-            try:
-                for i in range(len(huff[x])):
-                    if huff[x][1][x1]=='0':
-                        down_lt_branch(x1)
-                    elif huff[x][1][x1]=='1':
-                        down_rt_branch(x1)
-                    x1+=1
-            except:
-                try:
-                    if huff[x][0]==" ":
-                        write_1("[space]",len('[space]'))
-                    else:
-                        write_1(huff[x][0],len(huff[x][0]))
-                except:
-                    m=1
-                x+=1
-                x1=0
-                t.pu()
-                t.goto(origin)
-                t.pd()
-        weights=[]
-        weights_01=[]
-        for i in huff:
-            q1.append(i[1])
-            weights_01.append(int(frequency[i[0]])) 
-        m=[]
-
-        q=[]
-        for i in range(len(q1)):
-            m.append(q1[i])
-            m.append(weights_01[i])
-            q.append(m)
-            m=[]
-        q=sorted(q,key=getKey_1)
-        q=sorted(q,key=getKey_3)
-        #########
-
-        bq=[]
-        a=0
-        c=0
-        ###To find the parent nodes of the roots of the Huffman tree###
-        while True:
-            try:
-                bq=[]
-                for i in q:
-                    y=list(i[0])
-                    y.pop(len(y)-1)
-                    j=''.join(y)
-                    bq.append(j)
-                a=0
-                if len(bq)==2:
-                    break
-#https://gist.github.com/nboubakr/0eec4ea650eeb6dc21f9
 
 ###import all modules needed###
 import heapq
@@ -245,7 +32,7 @@ def encode(frequency):
 
 
 ###main function###
-def __main__():
+def main():
     data = input("Enter a sentence: \n")
     #data="ALL PEOPLE SEEM TO NEED DATA PROCESSING."
     try:
@@ -321,10 +108,7 @@ def __main__():
             t.lt(90)
             t.bk(b*2)
             t.pd()
-            if c!='[space]':
-                t.write(c,font=("Helvetica",10,"normal"))
-            else:
-                t.write(c,font=("Helvetica",10,"normal"))
+            t.write(c,font=("Helvetica",10,"normal"))
             t.pu()
             t.fd(b*2)
             t.rt(90)
@@ -447,7 +231,7 @@ def __main__():
         ###errors includes only zero or one type of characters are entered through input###
     except:
         print("There was an error, please type two or more different characters\n")
-    
+    t.hideturtle()
     tm=input("Press Enter to continue, enter 'q' to quit\n")
     if tm!='q':
         print("\n"*40)
@@ -456,6 +240,5 @@ def __main__():
 
 print("\n"*40)
 ###call main function
-__main__()
-#########
-
+if __name__=="__main__":
+    main()
