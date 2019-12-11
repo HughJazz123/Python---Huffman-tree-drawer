@@ -236,7 +236,7 @@ def main():
     if tm!='q':
         print("\n"*40)
         t.Screen().reset()
-        __main__()
+        main()
 
 print("\n"*40)
 ###call main function
